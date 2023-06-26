@@ -1,0 +1,17 @@
+provider "aws" {
+  region = "ap-northeast-2"
+}
+
+data "aws_security_group" "my_cluster_node" {
+  name = "my-cluster-node"
+}
+
+resource "aws_security_group_rule" "vxlan_overlay" {
+  description              = "VXLAN overlay"
+  security_group_id        = data.aws_security_group.my_cluster_node.id
+  type                     = "ingress"
+  from_port                = 8472
+  to_port                  = 8472
+  protocol                 = "udp"
+  source_security_group_id = data.aws_security_group.my_cluster_node.id
+}
